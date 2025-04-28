@@ -81,7 +81,13 @@ func main() {
 			return
 		}
 
-		record := []string{line.Hash, strconv.FormatUint(line.Idx, 10), strconv.FormatUint(line.BlockNumber, 10), line.PubKeyScript.Addresses[0], strconv.FormatUint(line.Value, 10)}
+		var address string
+		if len(line.PubKeyScript.Addresses) > 0 {
+			address = line.PubKeyScript.Addresses[0] // use [0] for multisig scripts
+			// keep it empty for simple OP_RETURN
+		}
+
+		record := []string{line.Hash, strconv.FormatUint(line.Idx, 10), strconv.FormatUint(line.BlockNumber, 10), address, strconv.FormatUint(line.Value, 10)}
 		if err := writer.Write(record); err != nil {
 			fmt.Println("Could not write record:", err)
 			return
